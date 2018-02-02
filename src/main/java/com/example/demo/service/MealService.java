@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.domain.Meal;
+import com.example.demo.domain.MealCriteria;
 
 import java.util.List;
 
@@ -38,4 +39,12 @@ public interface MealService {
    * @param meal the meal entry
    */
   void delete(Meal meal);
+
+  /**
+   * Find meals matching the search criteria
+   *
+   * @param searchCriteria the search criteria
+   * @return the list of meals matching the search criteria
+   */
+  List<Meal> findByCriteria(MealCriteria searchCriteria);
 }

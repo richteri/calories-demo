@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.domain.Meal;
+import com.example.demo.domain.MealCriteria;
 import com.example.demo.domain.User;
 import com.example.demo.service.MealService;
 import com.example.demo.service.UserService;
@@ -86,12 +87,22 @@ public class UserController {
 
   @PreAuthorize("principal.id == #id or hasRole('ADMIN')")
   @PutMapping("/{id}/meals/{mealId}")
-  public ResponseEntity<Meal> updateMeal(@PathVariable("id") Long id, @PathVariable("mealId") Long mealId, @Valid @RequestBody Meal meal) {
+  public ResponseEntity<Meal> updateMeal(@PathVariable("id") Long id, @PathVariable("mealId") Long mealId,
+                                         @Valid @RequestBody Meal meal) {
     User user = userService.findOne(id);
     meal.setUser(user);
     meal.setId(mealId);
     Meal saved = mealService.save(meal);
     return ResponseEntity.ok(saved);
+  }
+
+  @PreAuthorize("principal.id == #id or hasRole('ADMIN')")
+  @PostMapping("/{id}/meals/search")
+  public ResponseEntity<List<Meal>> findMealsByDateAndTime(@PathVariable("id") Long id,
+                                                           @Valid @RequestBody MealCriteria mealCriteria) {
+    User user = userService.findOne(id);
+    mealCriteria.setUser(user);
+    return ResponseEntity.ok(mealService.findByCriteria(mealCriteria));
   }
 
 }

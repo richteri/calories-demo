@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.domain.Meal;
+import com.example.demo.domain.MealCriteria;
 import com.example.demo.repository.MealRepository;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
@@ -35,5 +36,12 @@ public class MealServiceImpl implements MealService {
   @Override
   public void delete(Meal meal) {
     mealRepository.delete(meal);
+  }
+
+  @Override
+  public List<Meal> findByCriteria(MealCriteria searchCriteria) {
+    return mealRepository.findByUserAndDateBetweenAndTimeBetween(searchCriteria.getUser(),
+        searchCriteria.getStartDate(), searchCriteria.getEndDate(),
+        searchCriteria.getStartTime(), searchCriteria.getEndTime());
   }
 }
