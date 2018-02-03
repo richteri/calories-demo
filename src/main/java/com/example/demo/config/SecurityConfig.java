@@ -1,5 +1,7 @@
 package com.example.demo.config;
 
+import com.example.demo.domain.User;
+import com.example.demo.security.Principal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,6 +12,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -37,7 +41,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   @Override
   public void configure(WebSecurity web) {
     web.ignoring().antMatchers("/resources/**");
-    web.debug(true);
   }
 
   @Override
@@ -62,5 +65,20 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   @Bean
   public PasswordEncoder encoder() {
     return new BCryptPasswordEncoder(11);
+  }
+
+  /**
+   * Convenient method to access current authenticated user
+   *
+   * @return current user
+   */
+  public static User currentUser() {
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    if (authentication != null) {
+      Principal principal = (Principal) authentication.getPrincipal();
+      return principal.getUser();
+    }
+
+    return null;
   }
 }

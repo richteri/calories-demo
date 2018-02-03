@@ -6,6 +6,7 @@ import com.example.demo.domain.User;
 import com.example.demo.service.MealService;
 import com.example.demo.service.UserService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,9 +17,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
+
+import static com.example.demo.config.SecurityConfig.currentUser;
 
 /**
  * User API Endpoint
@@ -88,12 +92,18 @@ public class UserController {
   @PreAuthorize("principal.id == #id or hasRole('ADMIN')")
   @PutMapping("/{id}/meals/{mealId}")
   public ResponseEntity<Meal> updateMeal(@PathVariable("id") Long id, @PathVariable("mealId") Long mealId,
+                                         HttpServletRequest request,
                                          @Valid @RequestBody Meal meal) {
-    User user = userService.findOne(id);
-    meal.setUser(user);
-    meal.setId(mealId);
-    Meal saved = mealService.save(meal);
-    return ResponseEntity.ok(saved);
+    Meal persisted = mealService.findOne(mealId);
+    if (persisted.getUser().equals(currentUser()) || request.isUserInRole("ADMIN")) {
+      User user = userService.findOne(id);
+      meal.setUser(user);
+      Meal updated = mealService.save(meal);
+      return ResponseEntity.ok(updated);
+    } else {
+      throw new AccessDeniedException("User is not authorized to update meal [" + mealId + "]");
+    }
+
   }
 
   @PreAuthorize("principal.id == #id or hasRole('ADMIN')")
@@ -105,4 +115,16 @@ public class UserController {
     return ResponseEntity.ok(mealService.findByCriteria(mealCriteria));
   }
 
+  @PreAuthorize("principal.id == #id or hasRole('ADMIN')")
+  @DeleteMapping("/{id}/meals/{mealId}")
+  public ResponseEntity<Void> delete(@PathVariable("id") Long id, @PathVariable("mealId") Long mealId,
+                                     HttpServletRequest request) {
+    Meal meal = mealService.findOne(mealId);
+    if (meal.getUser().equals(currentUser()) || request.isUserInRole("ADMIN")) {
+      mealService.delete(meal);
+    } else {
+      throw new AccessDeniedException("User is not authorized to delete meal [" + mealId + "]");
+    }
+    return ResponseEntity.noContent().build();
+  }
 }

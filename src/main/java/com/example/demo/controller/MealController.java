@@ -19,7 +19,7 @@ import java.net.URI;
 import java.util.List;
 
 /**
- * Meal API Endpoint
+ * Meal API Endpoint for admins only
  */
 @RestController
 @RequestMapping("/api/meals")
@@ -32,6 +32,7 @@ public class MealController {
     this.mealService = mealService;
   }
 
+  @PreAuthorize("hasRole('ADMIN')")
   @GetMapping
   public ResponseEntity<List<Meal>> findAll() {
     return ResponseEntity.ok(mealService.findAll());

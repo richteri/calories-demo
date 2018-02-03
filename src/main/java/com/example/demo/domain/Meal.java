@@ -1,8 +1,5 @@
 package com.example.demo.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -16,6 +13,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Objects;
 
 /**
  * Meal Model
@@ -39,21 +37,9 @@ public class Meal {
   @Max(10000)
   private Integer calories;
 
-  @JsonIgnore
   @ManyToOne(fetch = FetchType.EAGER)
-  @JoinColumn(name = "USER_ID")
+  @JoinColumn(name = "USER_ID", nullable = false)
   private User user;
-
-  @JsonProperty("userId")
-  private Long unpackUserId() {
-    return user.getId();
-  }
-
-  @JsonProperty("userName")
-  private String unpackUserName() {
-    return user.getName();
-  }
-
 
   public Long getId() {
     return id;
@@ -101,5 +87,30 @@ public class Meal {
 
   public void setUser(User user) {
     this.user = user;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    Meal meal = (Meal) o;
+    return Objects.equals(id, meal.id);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(id);
+  }
+
+  @Override
+  public String toString() {
+    return "Meal{" +
+        "id=" + id +
+        ", description='" + description + '\'' +
+        ", date=" + date +
+        ", time=" + time +
+        ", calories=" + calories +
+        ", user=" + user +
+        '}';
   }
 }

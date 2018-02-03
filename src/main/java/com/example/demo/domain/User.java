@@ -18,6 +18,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * User Model
@@ -39,8 +40,11 @@ public class User {
   @Column(length = 50, unique = true, nullable = false)
   private String username;
 
-  @JsonIgnore
-  @Column(length = 60)
+  /**
+   * Password cannot be updated after creation.
+   * Hash won't be sent to client.
+   */
+  @Column(length = 60, nullable = false, updatable = false)
   private String password;
 
   @Min(0)
@@ -108,5 +112,30 @@ public class User {
 
   public void setMeals(List<Meal> meals) {
     this.meals = meals;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    User user = (User) o;
+    return Objects.equals(id, user.id);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(id);
+  }
+
+  @Override
+  public String toString() {
+    return "User{" +
+        "id=" + id +
+        ", name='" + name + '\'' +
+        ", username='" + username + '\'' +
+        ", password='" + password + '\'' +
+        ", calories=" + calories +
+        ", role=" + role +
+        '}';
   }
 }

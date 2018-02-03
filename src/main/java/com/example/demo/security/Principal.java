@@ -29,6 +29,10 @@ public class Principal implements UserDetails {
     return user.getId();
   }
 
+  public User getUser() {
+    return user;
+  }
+
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
     return authorities;
