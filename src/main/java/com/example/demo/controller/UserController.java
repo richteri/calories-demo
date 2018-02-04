@@ -44,6 +44,12 @@ public class UserController {
     return ResponseEntity.ok(userService.findAll());
   }
 
+  @PreAuthorize("isAuthenticated()")
+  @GetMapping("/current-user")
+  public ResponseEntity<User> findCurrentUser() {
+    return ResponseEntity.ok(currentUser());
+  }
+
   @PreAuthorize("principal.id == #id or hasRole('MANAGER')")
   @GetMapping("/{id}")
   public ResponseEntity<User> findOne(@PathVariable("id") Long id) {
