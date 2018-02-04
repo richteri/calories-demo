@@ -1,28 +1,34 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { User } from '../domain/user';
+import { Observable } from 'rxjs/Observable';
+import { Meal } from '../domain/meal';
 
 @Injectable()
 export class UserService {
   constructor(private http: HttpClient) { }
 
-  getAll() {
+  findAll(): Observable<User[]> {
     return this.http.get<User[]>('/api/users');
   }
 
-  getById(id: number) {
-    return this.http.get('/api/users/' + id);
+  findOne(id: number): Observable<User> {
+    return this.http.get<User>('/api/users/' + id);
   }
 
-  create(user: User) {
-    return this.http.post('/api/users', user);
+  create(user: User): Observable<User> {
+    return this.http.post<User>('/api/users', user);
   }
 
-  update(user: User) {
-    return this.http.put('/api/users/' + user.id, user);
+  update(user: User): Observable<User> {
+    return this.http.put<User>('/api/users/' + user.id, user);
   }
 
-  delete(id: number) {
-    return this.http.delete('/api/users/' + id);
+  delete(id: number): Observable<void> {
+    return this.http.delete<void>('/api/users/' + id);
+  }
+
+  findMeals(user: User): Observable<Meal[]> {
+    return this.http.get<Meal[]>(`/api/users/${user.id}/meals`);
   }
 }

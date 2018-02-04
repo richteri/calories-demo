@@ -1,3 +1,30 @@
-<p>
-  meal-list works!
-</p>
+<p-table [value]="meals" dataKey="id">
+  <ng-template pTemplate="header">
+    <tr>
+      <th>Date</th>
+      <th>Time</th>
+      <th>Description</th>
+      <th>Calories</th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-meal let-rowIndex="rowIndex">
+    <tr>
+      <td *ngIf="rowGroupMetadata[meal.date].index === rowIndex"
+          [attr.rowspan]="rowGroupMetadata[meal.date].size"
+          [class]="dayStyleClass(meal.date)">
+        {{meal.date}}<br>
+        {{rowGroupMetadata[meal.date]?.calories || 0}} of {{user.calories || 0}}
+      </td>
+      <td>{{meal.time}}</td>
+      <td>{{meal.description}}</td>
+      <td>{{meal.calories}}</td>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="emptymessage">
+    <tr>
+      <td colspan="4">
+        No records found
+      </td>
+    </tr>
+  </ng-template>
+</p-table>

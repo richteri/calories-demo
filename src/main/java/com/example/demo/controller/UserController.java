@@ -83,7 +83,8 @@ public class UserController {
   @PreAuthorize("principal.id == #id or hasRole('ADMIN')")
   @GetMapping("/{id}/meals")
   public ResponseEntity<List<Meal>> findAllMeals(@PathVariable("id") Long id) {
-    return ResponseEntity.ok(userService.findOne(id).getMeals());
+    User user = userService.findOne(id);
+    return ResponseEntity.ok(mealService.findByUser(user));
   }
 
   @PreAuthorize("principal.id == #id or hasRole('ADMIN')")

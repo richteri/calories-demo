@@ -2,6 +2,7 @@ package com.example.demo.service;
 
 import com.example.demo.domain.Meal;
 import com.example.demo.domain.MealCriteria;
+import com.example.demo.domain.User;
 
 import java.util.List;
 
@@ -47,4 +48,12 @@ public interface MealService {
    * @return the list of meals matching the search criteria
    */
   List<Meal> findByCriteria(MealCriteria searchCriteria);
+
+  /**
+   * Find all meals of the specified user and sort them by date
+   *
+   * @param user the user to look for
+   * @return the sorted list of meals
+   */
+  List<Meal> findByUser(User user);
 }

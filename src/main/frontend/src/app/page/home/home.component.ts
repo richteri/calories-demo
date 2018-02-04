@@ -9,6 +9,7 @@ import { User } from '../../domain/user';
 })
 export class HomeComponent implements OnInit {
   currentUser: User;
+  selectedUser: User;
 
   constructor(private authenticationService: AuthenticationService) {
     this.currentUser = authenticationService.currentUser();
@@ -19,6 +20,10 @@ export class HomeComponent implements OnInit {
 
   logout() {
     this.authenticationService.logout();
+  }
+
+  selectUser(user: User) {
+    this.selectedUser = user;
   }
 
 }
