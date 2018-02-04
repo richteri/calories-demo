@@ -1,0 +1,10 @@
+Welcome {{currentUser.name}}. You're logged in as {{currentUser.username}} with role {{currentUser.role}}. <button (click)="logout()">Logout</button>
+<div class="ui-g">
+  <div class="ui-g-4">
+    <app-user-list></app-user-list>
+  </div>
+  <div class="ui-g-8">
+    <app-user-details></app-user-details>
+    <app-meal-list></app-meal-list>
+  </div>
+</div>
