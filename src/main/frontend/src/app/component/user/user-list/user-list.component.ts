@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { User } from '../../../domain/user';
 import { UserService } from '../../../service/user.service';
 
@@ -9,16 +9,18 @@ import { UserService } from '../../../service/user.service';
 })
 export class UserListComponent implements OnInit {
 
+  @Input()
   users: User[] = [];
+
+  @Input()
   selectedUser: User;
 
   @Output()
   userSelected = new EventEmitter<User>();
 
-  constructor(private userService: UserService) { }
+  constructor() { }
 
   ngOnInit() {
-    this.userService.findAll().subscribe(users => this.users = users);
   }
 
   rowSelect() {

@@ -3,6 +3,16 @@ import { User } from '../../../domain/user';
 import { UserService } from '../../../service/user.service';
 import { Meal } from '../../../domain/meal';
 
+/**
+ * Group structure description
+ */
+class GroupMeta {
+  constructor(public index: number,
+              public size: number,
+              public calories: number) {
+  }
+}
+
 @Component({
   selector: 'app-meal-list',
   templateUrl: './meal-list.component.html',
@@ -11,7 +21,7 @@ import { Meal } from '../../../domain/meal';
 export class MealListComponent implements OnInit {
 
   meals: Meal[] = [];
-  rowGroupMetadata: any;
+  private groupMeta: Map<string, GroupMeta> = new Map<string, GroupMeta>();
 
   _user: User;
 
@@ -33,47 +43,46 @@ export class MealListComponent implements OnInit {
 
   refreshMeals() {
     if (this.user && this.user.id) {
-      this.userService.findMeals(this.user).subscribe(meals => {
-        this.meals = meals;
-        this.updateRowGroupMetaData();
+      this.userService.findMeals(this.user).subscribe((meals: Meal[]) => {
+        // make sure meals are sorted
+        this.meals = meals.sort((a, b) => {
+          // date desc, time asc, nulls to the top
+          const dateCompare = (a.date || 'z').localeCompare(b.date || 'z') * -1;
+          return dateCompare || (a.time || '!').localeCompare(b.time || '!');
+        });
+        this.updateGroupMeta();
       });
     } else {
       this.meals = [];
-      this.updateRowGroupMetaData();
+      this.updateGroupMeta();
     }
   }
 
-  updateRowGroupMetaData() {
-    this.rowGroupMetadata = {};
-    if (this.meals) {
-      for (let i = 0; i < this.meals.length; i++) {
-        const meal = this.meals[i];
-        if (i == 0) {
-          this.rowGroupMetadata[meal.date] = {index: 0, size: 1, calories: meal.calories || 0};
+  updateGroupMeta() {
+    this.groupMeta.clear();
+    for (let i = 0; i < this.meals.length; i++) {
+      const date = this.groupKey(this.meals[i].date);
+      const calories = this.meals[i].calories || 0;
+      if (i == 0) {
+        this.groupMeta.set(date, new GroupMeta(0, 1, calories));
+      } else {
+        const previousRowData = this.meals[i - 1];
+        if (date === this.groupKey(previousRowData.date)) {
+          this.groupMeta.get(date).size++;
+          this.groupMeta.get(date).calories += calories;
         } else {
-          const previousRowData = this.meals[i - 1];
-          if (meal.date === previousRowData.date) {
-            this.rowGroupMetadata[meal.date].size++;
-            this.rowGroupMetadata[meal.date].calories += meal.calories;
-          } else {
-            this.rowGroupMetadata[meal.date] = {index: i, size: 1, calories: meal.calories || 0};
-          }
+          this.groupMeta.set(date, new GroupMeta(i, 1, calories));
         }
       }
     }
-    console.log(this.rowGroupMetadata);
   }
 
-  dayStyleClass(date: string): string {
-    if (!this.user || !this.user.calories || !this.rowGroupMetadata[date] || !this.rowGroupMetadata[date].calories) {
-      return 'style-unknown';
-    } else {
-      if (this.user.calories >= this.rowGroupMetadata[date].calories) {
-        return 'style-ok';
-      } else {
-        return 'style-exceeded';
-      }
-    }
+  private groupKey(date: string) {
+    return date || '_NULL';
+  }
+
+  group(date: string): GroupMeta {
+    return this.groupMeta.get(this.groupKey(date));
   }
 
 }

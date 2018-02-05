@@ -1,4 +1,4 @@
-<p-table [value]="meals" dataKey="id">
+<p-table [value]="meals" dataKey="id" [customSort]="true">
   <ng-template pTemplate="header">
     <tr>
       <th>Date</th>
@@ -9,11 +9,10 @@
   </ng-template>
   <ng-template pTemplate="body" let-meal let-rowIndex="rowIndex">
     <tr>
-      <td *ngIf="rowGroupMetadata[meal.date].index === rowIndex"
-          [attr.rowspan]="rowGroupMetadata[meal.date].size"
-          [class]="dayStyleClass(meal.date)">
+      <td *ngIf="group(meal.date).index === rowIndex" [attr.rowspan]="group(meal.date).size"
+          [class]="group(meal.date).calories > user.calories ? 'style-exceeded' : 'style-ok'">
         {{meal.date}}<br>
-        {{rowGroupMetadata[meal.date]?.calories || 0}} of {{user.calories || 0}}
+        {{group(meal.date).calories}} of {{user.calories || 0}}
       </td>
       <td>{{meal.time}}</td>
       <td>{{meal.description}}</td>

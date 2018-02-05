@@ -1,10 +1,12 @@
 Welcome {{currentUser.name}}. You're logged in as {{currentUser.username}} with role {{currentUser.role}}. <button (click)="logout()">Logout</button>
 <div class="ui-g">
   <div class="ui-g-4">
-    <app-user-list (userSelected)="selectUser($event)"></app-user-list>
+    <app-user-list [users]="users" [(selectedUser)]="selectedUser" (userSelected)="selectUser($event)"></app-user-list>
   </div>
-  <div class="ui-g-8">
-    <app-user-details [user]="selectedUser"></app-user-details>
+  <div class="ui-g-8" *ngIf="selectedUser">
+    <app-user-details [user]="selectedUser" *ngIf="!editedUser"
+                      (edit)="userEdit()" (create)="userCreate()" (delete)="userDelete()"></app-user-details>
+    <app-user-edit [user]="editedUser" *ngIf="editedUser" (cancel)="userCancel()" (save)="userSave($event)"></app-user-edit>
     <app-meal-list [user]="selectedUser"></app-meal-list>
   </div>
 </div>

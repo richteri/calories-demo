@@ -1,3 +1,29 @@
-<p>
-  user-edit works!
-</p>
+<form #form="ngForm">
+  <div class="ui-g">
+    <div class="ui-g-6">
+      <button type="button" label="Cancel" pButton (click)="cancel.emit($event)"></button>
+      <button type="button" label="Save" pButton (click)="saveClick()"></button>
+    </div>
+  </div>
+  <div class="ui-g">
+    <div class="ui-g-2">ID</div>
+    <div class="ui-g-4">{{user?.id}}</div>
+  </div>
+  <div class="ui-g ui-fluid">
+    <div class="ui-g-2"><label for="user-name">Name</label></div>
+    <div class="ui-g-4"><input id="user-name" name="name" [(ngModel)]="user.name" [required]="true" pInputText></div>
+  </div>
+  <div class="ui-g ui-fluid">
+    <div class="ui-g-2"><label for="user-calories">Calories</label></div>
+    <div class="ui-g-4"><p-spinner id="user-calories" name="calories" [(ngModel)]="user.calories"></p-spinner></div>
+  </div>
+  <div class="ui-g ui-fluid">
+    <div class="ui-g-2"><label for="user-username">Username</label></div>
+    <div class="ui-g-4"><input id="user-username" name="username" [(ngModel)]="user.username"
+                               [required]="true" [pKeyFilter]="USERNAME_REG_EXP" pInputText></div>
+  </div>
+  <div class="ui-g ui-fluid">
+    <div class="ui-g-2"><label for="user-role">Role</label></div>
+    <div class="ui-g-4"><p-dropdown id="user-role" name="role" [options]="roleOptions" [(ngModel)]="user.role" [required]="true"></p-dropdown></div>
+  </div>
+</form>

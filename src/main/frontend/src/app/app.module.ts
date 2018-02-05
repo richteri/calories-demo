@@ -8,6 +8,7 @@ import { ServiceModule } from './service/service.module';
 import { HttpClientModule } from '@angular/common/http';
 import { HomeModule } from './page/home/home.module';
 import { LoginModule } from './page/login/login.module';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 
 @NgModule({
@@ -16,6 +17,7 @@ import { LoginModule } from './page/login/login.module';
   ],
   imports: [
     BrowserModule,
+    NoopAnimationsModule,
     HttpClientModule,
     routing,
     ServiceModule,

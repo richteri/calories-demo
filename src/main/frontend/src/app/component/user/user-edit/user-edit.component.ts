@@ -1,4 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { User } from '../../../domain/user';
+import { Role } from '../../../domain/role';
+import { NgForm } from '@angular/forms';
+import { UserService } from '../../../service/user.service';
 
 @Component({
   selector: 'app-user-edit',
@@ -7,9 +11,35 @@ import { Component, OnInit } from '@angular/core';
 })
 export class UserEditComponent implements OnInit {
 
+  readonly USERNAME_REG_EXP: RegExp = /^[a-zA-Z0-9._-]{1,50}$/;
+
+  @Input()
+  user: User;
+
+  @ViewChild('form')
+  form: NgForm;
+
+  @Output()
+  save = new EventEmitter<any>();
+
+  @Output()
+  cancel = new EventEmitter<any>();
+
+  roleOptions: {value: Role; label: string}[] = [
+    {value: Role.USER, label: 'User'},
+    {value: Role.MANAGER, label: 'Manager'},
+    {value: Role.ADMIN, label: 'Admin'}
+  ];
+
   constructor() { }
 
   ngOnInit() {
+  }
+
+  saveClick() {
+    if (this.form.valid) {
+      this.save.emit(this.user);
+    }
   }
 
 }

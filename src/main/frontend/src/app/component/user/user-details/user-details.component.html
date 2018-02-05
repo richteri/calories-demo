@@ -1,5 +1,27 @@
-ID: {{user?.id}}<br>
-Name: {{user?.name}}<br>
-Calories: {{user?.calories}}<br>
-Username: {{user?.username}}<br>
-Username: {{user?.role}}<br>
+<div class="ui-g">
+  <div class="ui-g-6">
+    <button type="button" label="Create" pButton (click)="create.emit($event)"></button>
+    <button type="button" label="Edit" pButton (click)="edit.emit($event)"></button>
+    <button type="button" label="Delete" pButton (click)="delete.emit($event)"></button>
+  </div>
+</div>
+<div class="ui-g">
+  <div class="ui-g-2">ID</div>
+  <div class="ui-g-4">{{user?.id}}</div>
+</div>
+<div class="ui-g">
+  <div class="ui-g-2">Name</div>
+  <div class="ui-g-4">{{user?.name}}</div>
+</div>
+<div class="ui-g">
+  <div class="ui-g-2">Calories</div>
+  <div class="ui-g-4">{{user?.calories}}</div>
+</div>
+<div class="ui-g">
+  <div class="ui-g-2">Username</div>
+  <div class="ui-g-4">{{user?.username}}</div>
+</div>
+<div class="ui-g">
+  <div class="ui-g-2">Role</div>
+  <div class="ui-g-4">{{user?.role}}</div>
+</div>

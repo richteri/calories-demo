@@ -55,7 +55,7 @@ public class User {
   private Role role = Role.USER;
 
   @JsonIgnore
-  @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, orphanRemoval = true)
+  @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
   private List<Meal> meals;
 
   public Long getId() {

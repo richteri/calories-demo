@@ -4,13 +4,15 @@ import { ServiceModule } from '../../service/service.module';
 import { HomeComponent } from './home.component';
 import { UserModule } from '../../component/user/user.module';
 import { MealModule } from '../../component/meal/meal.module';
+import { ButtonModule } from 'primeng/button';
 
 @NgModule({
   imports: [
     CommonModule,
     ServiceModule,
     UserModule,
-    MealModule
+    MealModule,
+    ButtonModule
   ],
   declarations: [HomeComponent]
 })
