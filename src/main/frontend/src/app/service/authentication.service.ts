@@ -3,16 +3,16 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 import { User } from '../domain/user';
+import { Router } from '@angular/router';
 
 @Injectable()
 export class AuthenticationService {
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private router: Router) { }
 
   login(username: string, password: string): Observable<User> {
     return this.http.get<User>('/api/users/current-user', {
       headers: {
-        'Authorization': 'Basic ' + btoa(username + ':' + password),
-        'X-Requested-With': 'XMLHttpRequest'
+        'Authorization': 'Basic ' + btoa(username + ':' + password)
       }
     }).map(user => {
         // login successful if there's a jwt token in the response
@@ -27,9 +27,10 @@ export class AuthenticationService {
 
   logout() {
     // remove user from local storage to log user out
-    this.http.post<any>('/logout', {})
+    this.http.get<any>('/logout')
       .subscribe(() => {
         localStorage.removeItem('currentUser');
+        this.router.navigateByUrl('/login?returnUrl=%2F');
       });
   }
 

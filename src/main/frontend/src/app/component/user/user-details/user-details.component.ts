@@ -17,6 +17,9 @@ export class UserDetailsComponent {
   @Output()
   delete = new EventEmitter<any>();
 
+  @Output()
+  create = new EventEmitter<any>();
+
   constructor() { }
 
 }

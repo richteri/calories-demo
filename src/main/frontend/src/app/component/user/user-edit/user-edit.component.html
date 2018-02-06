@@ -1,5 +1,11 @@
 <form #form="ngForm">
   <div class="ui-g">
+    <div class="ui-g-6">
+      <button type="button" label="Cancel" pButton (click)="cancel.emit($event)"></button>
+      <button type="button" label="Save" pButton (click)="saveClick()" [disabled]="!form.valid"></button>
+    </div>
+  </div>
+  <div class="ui-g">
     <div class="ui-g-2">ID</div>
     <div class="ui-g-4">{{user?.id}}</div>
   </div>
@@ -27,11 +33,5 @@
     <div class="ui-g-2"><label for="user-role">Role</label></div>
     <div class="ui-g-4"><p-dropdown id="user-role" name="role" [options]="roleOptions" [(ngModel)]="user.role"
                                     [required]="true"></p-dropdown></div>
-  </div>
-  <div class="ui-g">
-    <div class="ui-g-6">
-      <button type="button" label="Cancel" pButton (click)="cancel.emit($event)"></button>
-      <button type="button" label="Save" pButton (click)="saveClick()" [disabled]="!form.valid"></button>
-    </div>
   </div>
 </form>
