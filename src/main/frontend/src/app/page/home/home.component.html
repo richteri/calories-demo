@@ -1,12 +1,29 @@
-Welcome {{currentUser.name}}. You're logged in as {{currentUser.username}} with role {{currentUser.role}}. <button (click)="logout()">Logout</button>
 <div class="ui-g">
-  <div class="ui-g-4">
-    <app-user-list [users]="users" [(selectedUser)]="selectedUser" (userSelected)="selectUser($event)"></app-user-list>
+  <div class="ui-g-12">
+    <div class="pull-right">
+      Welcome {{currentUser.name}}. You're logged in as {{currentUser.username}} with role {{currentUser.role}}. <button (click)="logout()">Logout</button>
+    </div>
   </div>
-  <div class="ui-g-8" *ngIf="selectedUser">
+  <div class="ui-g-4">
+    <div class="ui-g">
+      <div class="ui-g-12">
+        <button type="button" label="Create" pButton (click)="userCreate()"></button>
+      </div>
+    </div>
+    <app-user-list [users]="users" [(selectedUser)]="selectedUser"
+                   (userSelected)="userSelect($event)"></app-user-list>
+  </div>
+  <div class="ui-g-8" *ngIf="selectedUser || editedUser">
     <app-user-details [user]="selectedUser" *ngIf="!editedUser"
-                      (edit)="userEdit()" (create)="userCreate()" (delete)="userDelete()"></app-user-details>
-    <app-user-edit [user]="editedUser" *ngIf="editedUser" (cancel)="userCancel()" (save)="userSave($event)"></app-user-edit>
-    <app-meal-list [user]="selectedUser"></app-meal-list>
+                      (edit)="userEdit()" (delete)="userDelete()"></app-user-details>
+    <app-user-edit [user]="editedUser" *ngIf="editedUser"
+                   (cancel)="userCancel()" (save)="userSave($event)"></app-user-edit>
+    <div class="ui-g">
+      <div class="ui-g-12">
+        <button type="button" label="Create" pButton (click)="mealCreate()"></button>
+      </div>
+    </div>
+    <app-meal-list [user]="selectedUser" [meals]="meals"
+                   (edit)="mealEdit($event)" (delete)="mealDelete($event)"></app-meal-list>
   </div>
 </div>

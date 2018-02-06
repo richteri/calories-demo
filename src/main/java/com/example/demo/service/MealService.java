@@ -56,4 +56,11 @@ public interface MealService {
    * @return the sorted list of meals
    */
   List<Meal> findByUser(User user);
+
+  /**
+   * Delete all meal entries of the specified user
+   *
+   * @param user the user to delete meals for
+   */
+  void deleteAllByUser(User user);
 }

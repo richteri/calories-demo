@@ -9,7 +9,7 @@ import { UserService } from '../../../service/user.service';
   templateUrl: './user-edit.component.html',
   styleUrls: ['./user-edit.component.css']
 })
-export class UserEditComponent implements OnInit {
+export class UserEditComponent {
 
   readonly USERNAME_REG_EXP: RegExp = /^[a-zA-Z0-9._-]{1,50}$/;
 
@@ -32,9 +32,6 @@ export class UserEditComponent implements OnInit {
   ];
 
   constructor() { }
-
-  ngOnInit() {
-  }
 
   saveClick() {
     if (this.form.valid) {

@@ -22,6 +22,11 @@
     <div class="ui-g-4"><input id="user-username" name="username" [(ngModel)]="user.username"
                                [required]="true" [pKeyFilter]="USERNAME_REG_EXP" pInputText></div>
   </div>
+  <div class="ui-g ui-fluid" *ngIf="!user.id">
+    <div class="ui-g-2"><label for="user-password">Password</label></div>
+    <div class="ui-g-4"><input id="user-password" name="password" [(ngModel)]="user.password"
+                               [required]="true" pInputText></div>
+  </div>
   <div class="ui-g ui-fluid">
     <div class="ui-g-2"><label for="user-role">Role</label></div>
     <div class="ui-g-4"><p-dropdown id="user-role" name="role" [options]="roleOptions" [(ngModel)]="user.role" [required]="true"></p-dropdown></div>

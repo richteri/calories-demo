@@ -7,7 +7,7 @@ import { UserService } from '../../../service/user.service';
   templateUrl: './user-list.component.html',
   styleUrls: ['./user-list.component.css']
 })
-export class UserListComponent implements OnInit {
+export class UserListComponent {
 
   @Input()
   users: User[] = [];
@@ -19,9 +19,6 @@ export class UserListComponent implements OnInit {
   userSelected = new EventEmitter<User>();
 
   constructor() { }
-
-  ngOnInit() {
-  }
 
   rowSelect() {
     this.userSelected.emit(this.selectedUser);

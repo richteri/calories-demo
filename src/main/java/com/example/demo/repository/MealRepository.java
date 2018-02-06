@@ -35,4 +35,11 @@ public interface MealRepository extends JpaRepository<Meal, Long> {
    * @return the sorted list of meals
    */
   List<Meal> findByUserOrderByDateDescTime(User user);
+
+  /**
+   * Delete all meal entries of the specified user
+   *
+   * @param user the user to delete meals for
+   */
+  void deleteAllByUser(User user);
 }

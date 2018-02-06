@@ -50,4 +50,9 @@ public class MealServiceImpl implements MealService {
   public List<Meal> findByUser(User user) {
     return mealRepository.findByUserOrderByDateDescTime(user);
   }
+
+  @Override
+  public void deleteAllByUser(User user) {
+    mealRepository.deleteAllByUser(user);
+  }
 }

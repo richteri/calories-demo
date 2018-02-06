@@ -2,6 +2,7 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { AuthenticationService } from '../../service/authentication.service';
 import { User } from '../../domain/user';
 import { UserService } from '../../service/user.service';
+import { Meal } from '../../domain/meal';
 
 @Component({
   selector: 'app-home',
@@ -19,6 +20,8 @@ export class HomeComponent implements OnInit {
   selectedUser: User;
   editedUser: User;
 
+  meals: Meal[] = [];
+
   constructor(private authenticationService: AuthenticationService,
               private userService: UserService) {
     this.currentUser = authenticationService.currentUser();
@@ -32,9 +35,12 @@ export class HomeComponent implements OnInit {
     this.authenticationService.logout();
   }
 
-  selectUser(user: User) {
+  userSelect(user: User) {
     this.editedUser = null;
     this.selectedUser = user;
+    this.userService.findMeals(user).subscribe((meals: Meal[]) => {
+      this.meals = meals;
+    });
   }
 
   userCreate() {
@@ -54,7 +60,7 @@ export class HomeComponent implements OnInit {
       } else if (this.users.length > index) {
         this.selectedUser = this.users[index];
       } else {
-        this.selectedUser = this.users[this.users.length];
+        this.selectedUser = this.users[this.users.length - 1];
       }
     });
   }
@@ -65,17 +71,30 @@ export class HomeComponent implements OnInit {
 
   userSave(user: User) {
     if (user.id) {
-      this.userService.update(user).subscribe(user => {
-        const index = this.users.findIndex(u => u.id === user.id);
-        this.users.splice(index, 1, user);
-        this.selectedUser = user;
+      this.userService.update(user).subscribe(retrieved => {
+        const index = this.users.findIndex(u => u.id === retrieved.id);
+        this.users.splice(index, 1, retrieved);
+        this.selectedUser = retrieved;
         this.editedUser = null;
       });
     } else {
-      this.users.push(user);
-      this.selectedUser = user;
-      this.editedUser = null;
+      this.userService.create(user).subscribe(retrieved => {
+        this.users.push(retrieved);
+        this.selectedUser = retrieved;
+        this.editedUser = null;
+      });
     }
   }
 
+  mealEdit(meal: Meal) {
+
+  }
+
+  mealCreate(meal: Meal) {
+
+  }
+
+  mealDelete(meal: Meal) {
+
+  }
 }

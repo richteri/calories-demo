@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { User } from '../../../domain/user';
 import { UserService } from '../../../service/user.service';
 import { Meal } from '../../../domain/meal';
@@ -18,47 +18,38 @@ class GroupMeta {
   templateUrl: './meal-list.component.html',
   styleUrls: ['./meal-list.component.css']
 })
-export class MealListComponent implements OnInit {
+export class MealListComponent {
 
-  meals: Meal[] = [];
+  private _meals: Meal[] = [];
   private groupMeta: Map<string, GroupMeta> = new Map<string, GroupMeta>();
 
-  _user: User;
-
-  get user() {
-    return this._user;
+  get meals() {
+    return this._meals;
   }
 
   @Input()
-  set user(user: User) {
-    this._user = user;
-    this.refreshMeals();
+  user: User;
+
+  @Input()
+  set meals(meals: Meal[]) {
+    this._meals = meals.sort((a, b) => {
+      // date desc, time asc, nulls to the top
+      const dateCompare = (a.date || 'z').localeCompare(b.date || 'z') * -1;
+      return dateCompare || (a.time || '!').localeCompare(b.time || '!');
+    });
+    this.updateGroupMeta();
   }
 
-  constructor(private userService: UserService) {
+  @Output()
+  edit = new EventEmitter<Meal>();
+
+  @Output()
+  delete = new EventEmitter<Meal>();
+
+  constructor() {
   }
 
-  ngOnInit() {
-  }
-
-  refreshMeals() {
-    if (this.user && this.user.id) {
-      this.userService.findMeals(this.user).subscribe((meals: Meal[]) => {
-        // make sure meals are sorted
-        this.meals = meals.sort((a, b) => {
-          // date desc, time asc, nulls to the top
-          const dateCompare = (a.date || 'z').localeCompare(b.date || 'z') * -1;
-          return dateCompare || (a.time || '!').localeCompare(b.time || '!');
-        });
-        this.updateGroupMeta();
-      });
-    } else {
-      this.meals = [];
-      this.updateGroupMeta();
-    }
-  }
-
-  updateGroupMeta() {
+  private updateGroupMeta() {
     this.groupMeta.clear();
     for (let i = 0; i < this.meals.length; i++) {
       const date = this.groupKey(this.meals[i].date);

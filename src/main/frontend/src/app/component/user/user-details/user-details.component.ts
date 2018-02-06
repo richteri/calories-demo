@@ -6,7 +6,7 @@ import { User } from '../../../domain/user';
   templateUrl: './user-details.component.html',
   styleUrls: ['./user-details.component.css']
 })
-export class UserDetailsComponent implements OnInit {
+export class UserDetailsComponent {
 
   @Input()
   user: User;
@@ -15,14 +15,8 @@ export class UserDetailsComponent implements OnInit {
   edit = new EventEmitter<any>();
 
   @Output()
-  create = new EventEmitter<any>();
-
-  @Output()
   delete = new EventEmitter<any>();
 
   constructor() { }
-
-  ngOnInit() {
-  }
 
 }
