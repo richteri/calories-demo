@@ -27,3 +27,10 @@
                    (edit)="mealEdit($event)" (delete)="mealDelete($event)"></app-meal-list>
   </div>
 </div>
+
+<ng-container *ngIf="editedMeal">
+  <p-dialog header="Edit Meal" [(visible)]="editedMeal" [closable]="false" appendTo="body" [width]="400">
+    <app-meal-edit [meal]="editedMeal" (cancel)="mealCancel()" (save)="mealSave($event)"></app-meal-edit>
+  </p-dialog>
+
+</ng-container>

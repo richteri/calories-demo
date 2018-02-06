@@ -25,8 +25,8 @@ public class Meal {
   @GeneratedValue(strategy = GenerationType.AUTO)
   private Long id;
 
-  @Size(max = 1000)
-  @Column(length = 1000)
+  @Size(max = 200)
+  @Column(length = 200)
   private String description;
 
   private LocalDate date;

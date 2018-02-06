@@ -31,4 +31,16 @@ export class UserService {
   findMeals(user: User): Observable<Meal[]> {
     return this.http.get<Meal[]>(`/api/users/${user.id}/meals`);
   }
+
+  deleteMeal(user: User, meal: Meal): Observable<void> {
+    return this.http.delete<void>(`/api/users/${user.id}/meals/${meal.id}`);
+  }
+
+  updateMeal(user: User, meal: Meal): Observable<Meal> {
+    return this.http.put<Meal>(`/api/users/${user.id}/meals/${meal.id}`, meal);
+  }
+
+  createMeal(user: User, meal: Meal): Observable<Meal> {
+    return this.http.post<Meal>(`/api/users/${user.id}/meals`, meal);
+  }
 }

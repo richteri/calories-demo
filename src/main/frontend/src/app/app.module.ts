@@ -9,6 +9,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { HomeModule } from './page/home/home.module';
 import { LoginModule } from './page/login/login.module';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { GrowlModule } from 'primeng/growl';
+import { MessageService } from 'primeng/components/common/messageservice';
 
 
 @NgModule({
@@ -22,9 +24,10 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
     routing,
     ServiceModule,
     HomeModule,
-    LoginModule
+    LoginModule,
+    GrowlModule
   ],
-  providers: [],
+  providers: [MessageService],
   bootstrap: [AppComponent]
 })
 export class AppModule {

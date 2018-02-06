@@ -48,7 +48,7 @@ public class User {
   private String password;
 
   @Min(0)
-  @Max(10000)
+  @Max(50000)
   private Integer calories;
 
   @Enumerated(EnumType.STRING)

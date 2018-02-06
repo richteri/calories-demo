@@ -1,26 +1,22 @@
 <form #form="ngForm">
   <div class="ui-g">
-    <div class="ui-g-6">
-      <button type="button" label="Cancel" pButton (click)="cancel.emit($event)"></button>
-      <button type="button" label="Save" pButton (click)="saveClick()"></button>
-    </div>
-  </div>
-  <div class="ui-g">
     <div class="ui-g-2">ID</div>
     <div class="ui-g-4">{{user?.id}}</div>
   </div>
   <div class="ui-g ui-fluid">
     <div class="ui-g-2"><label for="user-name">Name</label></div>
-    <div class="ui-g-4"><input id="user-name" name="name" [(ngModel)]="user.name" [required]="true" pInputText></div>
+    <div class="ui-g-4"><input id="user-name" name="name" [(ngModel)]="user.name" [required]="true"
+                               [maxlength]="100" pInputText></div>
   </div>
   <div class="ui-g ui-fluid">
     <div class="ui-g-2"><label for="user-calories">Calories</label></div>
-    <div class="ui-g-4"><p-spinner id="user-calories" name="calories" [(ngModel)]="user.calories"></p-spinner></div>
+    <div class="ui-g-4"><p-spinner id="user-calories" name="calories" [(ngModel)]="user.calories"
+                                   [min]="0" [max]="50000"></p-spinner></div>
   </div>
   <div class="ui-g ui-fluid">
     <div class="ui-g-2"><label for="user-username">Username</label></div>
-    <div class="ui-g-4"><input id="user-username" name="username" [(ngModel)]="user.username"
-                               [required]="true" [pKeyFilter]="USERNAME_REG_EXP" pInputText></div>
+    <div class="ui-g-4"><input id="user-username" name="username" [(ngModel)]="user.username" [required]="true"
+                               [maxlength]="50" [pKeyFilter]="USERNAME_REG_EXP" pInputText></div>
   </div>
   <div class="ui-g ui-fluid" *ngIf="!user.id">
     <div class="ui-g-2"><label for="user-password">Password</label></div>
@@ -29,6 +25,13 @@
   </div>
   <div class="ui-g ui-fluid">
     <div class="ui-g-2"><label for="user-role">Role</label></div>
-    <div class="ui-g-4"><p-dropdown id="user-role" name="role" [options]="roleOptions" [(ngModel)]="user.role" [required]="true"></p-dropdown></div>
+    <div class="ui-g-4"><p-dropdown id="user-role" name="role" [options]="roleOptions" [(ngModel)]="user.role"
+                                    [required]="true"></p-dropdown></div>
+  </div>
+  <div class="ui-g">
+    <div class="ui-g-6">
+      <button type="button" label="Cancel" pButton (click)="cancel.emit($event)"></button>
+      <button type="button" label="Save" pButton (click)="saveClick()" [disabled]="!form.valid"></button>
+    </div>
   </div>
 </form>

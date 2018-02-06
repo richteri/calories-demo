@@ -1,3 +1,36 @@
-<p>
-  meal-edit works!
-</p>
+<form #form="ngForm">
+  <div class="ui-g">
+    <div class="ui-g-4">ID</div>
+    <div class="ui-g-8">{{meal?.id}}</div>
+  </div>
+  <div class="ui-g ui-fluid">
+    <div class="ui-g-4"><label for="meal-description">Description</label></div>
+    <div class="ui-g-8"><input id="meal-description" name="description" [(ngModel)]="meal.description"
+                               [maxlength]="200" pInputText></div>
+  </div>
+  <div class="ui-g ui-fluid">
+    <div class="ui-g-4"><label for="meal-calories">Calories</label></div>
+    <div class="ui-g-8"><p-spinner id="meal-calories" name="calories" [(ngModel)]="meal.calories"
+                                   [step]="50" [min]="0" [max]="10000"></p-spinner></div>
+  </div>
+  <div class="ui-g ui-fluid">
+    <div class="ui-g-4"><label for="meal-date">Date</label></div>
+    <div class="ui-g-8">
+      <p-calendar id="meal-date" name="date" [(ngModel)]="meal.date" [selectOtherMonths]="true" [readonlyInput]="true"
+                  [showButtonBar]="true" dateFormat="yy-mm-dd" dataType="string" appendTo="body"></p-calendar>
+    </div>
+  </div>
+  <div class="ui-g ui-fluid">
+    <div class="ui-g-4"><label for="meal-time">Time</label></div>
+    <div class="ui-g-8">
+      <p-calendar id="meal-time" name="time" [(ngModel)]="time" (onSelect)="timeSelect($event)" [readonlyInput]="true"
+                  [timeOnly]="true" [showSeconds]="true" [utc]="true" appendTo="body"></p-calendar>
+    </div>
+  </div>
+  <div class="ui-g">
+    <div class="ui-g-12">
+      <button type="button" label="Cancel" pButton (click)="cancel.emit($event)"></button>
+      <button type="button" label="Save" pButton (click)="saveClick()" [disabled]="!form.valid"></button>
+    </div>
+  </div>
+</form>

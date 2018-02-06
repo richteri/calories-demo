@@ -5,6 +5,7 @@ import { HomeComponent } from './home.component';
 import { UserModule } from '../../component/user/user.module';
 import { MealModule } from '../../component/meal/meal.module';
 import { ButtonModule } from 'primeng/button';
+import { DialogModule } from 'primeng/dialog';
 
 @NgModule({
   imports: [
@@ -12,7 +13,8 @@ import { ButtonModule } from 'primeng/button';
     ServiceModule,
     UserModule,
     MealModule,
-    ButtonModule
+    ButtonModule,
+    DialogModule
   ],
   declarations: [HomeComponent]
 })
