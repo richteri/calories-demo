@@ -1,8 +1,8 @@
 <div class="ui-g">
   <div class="ui-g-6">
-    <button type="button" label="Create" pButton (click)="create.emit($event)"></button>
+    <button *ngIf="auth.manager()" type="button" label="Create" pButton (click)="create.emit($event)"></button>
     <button type="button" label="Edit" pButton (click)="edit.emit($event)"></button>
-    <button type="button" label="Delete" pButton (click)="delete.emit($event)"></button>
+    <button *ngIf="auth.manager()" type="button" label="Delete" pButton (click)="delete.emit($event)"></button>
   </div>
 </div>
 <div class="ui-g">

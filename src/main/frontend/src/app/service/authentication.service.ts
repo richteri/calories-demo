@@ -4,6 +4,7 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 import { User } from '../domain/user';
 import { Router } from '@angular/router';
+import { Role } from '../domain/role';
 
 @Injectable()
 export class AuthenticationService {
@@ -34,7 +35,22 @@ export class AuthenticationService {
       });
   }
 
-  currentUser(): User {
+  static principal(): User {
     return JSON.parse(localStorage.getItem('currentUser'));
+  }
+
+  static admin(): boolean {
+    const user = this.principal();
+    return user && user.role === Role.ADMIN;
+  }
+
+  static manager(): boolean {
+    const user = this.principal();
+    return user && (user.role === Role.ADMIN || user.role === Role.MANAGER);
+  }
+
+  static user(): boolean {
+    const user = this.principal();
+    return user && user.role === Role.USER;
   }
 }

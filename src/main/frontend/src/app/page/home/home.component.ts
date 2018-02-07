@@ -26,14 +26,20 @@ export class HomeComponent implements OnInit {
   meals: Meal[] = [];
   editedMeal: Meal;
 
+  auth = AuthenticationService;
+
   constructor(private authenticationService: AuthenticationService,
               private userService: UserService,
               private messageService: MessageService) {
-    this.currentUser = authenticationService.currentUser();
   }
 
   ngOnInit() {
-    this.userService.findAll().subscribe(users => this.users = users);
+    if (this.auth.manager()) {
+      this.userService.findAll().subscribe(users => this.users = users);
+    } else {
+      this.users = [this.auth.principal()];
+      this.userSelect(this.auth.principal());
+    }
   }
 
   logout() {
@@ -43,7 +49,7 @@ export class HomeComponent implements OnInit {
   userSelect(user: User) {
     this.editedUser = null;
     this.selectedUser = user;
-    if (user && user.id) {
+    if ((this.auth.user() || this.auth.admin()) && user && user.id) {
       this.userService.findMeals(user).subscribe((meals: Meal[]) => {
         this.meals = meals;
       });

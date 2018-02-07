@@ -1,22 +1,22 @@
 <header>
-  Welcome {{currentUser.name}}. You're logged in as {{currentUser.username}} with role {{currentUser.role}}.
+  Welcome {{auth.principal().name}}. You're logged in as {{auth.principal().username}} with role {{auth.principal().role}}.
   <button type="button" (click)="logout()" pButton label="Logout"></button>
 </header>
 
 <div class="ui-g">
-  <div class="ui-g-4 sidebar">
+  <div class="ui-g-4 sidebar" *ngIf="auth.manager()">
     <app-user-list [users]="users" [(selectedUser)]="selectedUser"
                    (userSelected)="userSelect($event)"></app-user-list>
   </div>
   <div class="ui-g-8">
-    <button type="button" label="Create" pButton (click)="userCreate()" *ngIf="!selectedUser && !editedUser"></button>
+    <button type="button" label="Create" pButton (click)="userCreate()" *ngIf="auth.manager() && !selectedUser && !editedUser"></button>
     <div class="details" *ngIf="selectedUser || editedUser">
       <app-user-details [user]="selectedUser" *ngIf="!editedUser"
                         (edit)="userEdit()" (delete)="userDelete()" (create)="userCreate()"></app-user-details>
       <app-user-edit [user]="editedUser" *ngIf="editedUser"
                      (cancel)="userCancel()" (save)="userSave($event)"></app-user-edit>
     </div>
-    <div class="list" *ngIf="selectedUser && !editedUser">
+    <div class="list" *ngIf="(auth.user() || auth.admin()) && selectedUser && !editedUser">
       <div class="ui-g">
         <div class="ui-g-12">
           <button type="button" label="Create" pButton (click)="mealCreate()"></button>

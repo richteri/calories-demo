@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AuthenticationService } from '../../service/authentication.service';
 import { User } from '../../domain/user';
 import { Router } from '@angular/router';
+import { MessageService } from 'primeng/components/common/messageservice';
 
 @Component({
   selector: 'app-login',
@@ -11,9 +12,10 @@ import { Router } from '@angular/router';
 export class LoginComponent implements OnInit {
   username: string;
   password: string;
-  error: string;
 
-  constructor(private authenticationService: AuthenticationService, private router: Router) { }
+  constructor(private authenticationService: AuthenticationService,
+              private router: Router,
+              private messageService: MessageService) { }
 
   ngOnInit() {
   }
@@ -25,7 +27,7 @@ export class LoginComponent implements OnInit {
       },
       (response: any) => {
         console.log(response);
-        this.error = `Error ${response.status}: Bad Credentials`;
+        this.messageService.add({severity: 'error', summary: 'Login Failed', detail: `Error ${response.status}: Bad Credentials`})
       });
   }
 

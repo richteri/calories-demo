@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { User } from '../../../domain/user';
+import { AuthenticationService } from '../../../service/authentication.service';
 
 @Component({
   selector: 'app-user-details',
@@ -19,6 +20,8 @@ export class UserDetailsComponent {
 
   @Output()
   create = new EventEmitter<any>();
+
+  auth = AuthenticationService;
 
   constructor() { }
 

@@ -3,6 +3,7 @@ import { User } from '../../../domain/user';
 import { Role } from '../../../domain/role';
 import { NgForm } from '@angular/forms';
 import { UserService } from '../../../service/user.service';
+import { AuthenticationService } from '../../../service/authentication.service';
 
 @Component({
   selector: 'app-user-edit',
@@ -30,6 +31,8 @@ export class UserEditComponent {
     {value: Role.MANAGER, label: 'Manager'},
     {value: Role.ADMIN, label: 'Admin'}
   ];
+
+  auth = AuthenticationService;
 
   constructor() { }
 

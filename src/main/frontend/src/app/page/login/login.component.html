@@ -1,6 +1,13 @@
-Username:<br>
-<input type="text" [(ngModel)]="username"><br>
-Password:<br>
-<input type="text" [(ngModel)]="password"><br>
-<button (click)="login()">Login</button>
-{{error}}
+<form #form="ngForm" (submit)="login()">
+  <div class="ui-g">
+    <div class="ui-g-1"><label for="login-username">Username</label></div>
+    <div class="ui-g-3"><input id="login-username" type="text" name="username" [(ngModel)]="username" [required]="true" pInputText></div>
+  </div>
+  <div class="ui-g">
+    <div class="ui-g-1"><label for="login-password">Password</label></div>
+    <div class="ui-g-3"><input id="login-password" type="password" name="password" [(ngModel)]="password" [required]="true" pInputText></div>
+  </div>
+  <div class="ui-g">
+    <div class="ui-g-offset-1 ui-g-3"><button type="submit" label="Login" [disabled]="!form.valid" pButton></button></div>
+  </div>
+</form>
