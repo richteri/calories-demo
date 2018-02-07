@@ -1,8 +1,15 @@
-<p-table [value]="meals" dataKey="id" [customSort]="true">
+<p-table [value]="meals" dataKey="id" [customSort]="true" #table>
   <ng-template pTemplate="header">
     <tr>
-      <th>Date</th>
-      <th>Time</th>
+      <th>
+        Date<br>
+        <p-dropdown [options]="yearOptions" [(ngModel)]="filterYear" (onChange)="filterDate()"></p-dropdown>
+        <p-dropdown [options]="monthOptions" [(ngModel)]="filterMonth" (onChange)="filterDate()"></p-dropdown>
+      </th>
+      <th>
+        Time<br>
+        <p-dropdown [options]="categoryOptions" [(ngModel)]="filterCategory" (onChange)="filterTime()"></p-dropdown>
+      </th>
       <th>Description</th>
       <th>Calories</th>
       <th>Actions</th>
@@ -10,11 +17,12 @@
   </ng-template>
   <ng-template pTemplate="body" let-meal let-rowIndex="rowIndex">
     <tr>
-      <td *ngIf="group(meal.date).index === rowIndex" [attr.rowspan]="group(meal.date).size"
+      <td *ngIf="!filtered() && group(meal.date).index === rowIndex" [attr.rowspan]="group(meal.date).size"
           [class]="group(meal.date).calories > user.calories ? 'style-exceeded' : 'style-ok'">
         {{meal.date}}<br>
         {{group(meal.date).calories}} of {{user.calories || 0}}
       </td>
+      <td *ngIf="filtered()">{{meal.date}}</td>
       <td>{{meal.time}}</td>
       <td>{{meal.description}}</td>
       <td>{{meal.calories}}</td>

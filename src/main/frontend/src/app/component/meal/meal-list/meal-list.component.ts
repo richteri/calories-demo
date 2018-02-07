@@ -1,7 +1,7 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { User } from '../../../domain/user';
-import { UserService } from '../../../service/user.service';
 import { Meal } from '../../../domain/meal';
+import { Table } from 'primeng/table';
 
 /**
  * Group structure description
@@ -46,7 +46,48 @@ export class MealListComponent {
   @Output()
   delete = new EventEmitter<Meal>();
 
+  @ViewChild('table')
+  table: Table;
+
+  yearOptions: {value: string; label: string}[];
+  monthOptions: {value: string; label: string}[];
+  categoryOptions: {value: string; label: string}[];
+
+  filterYear = '';
+  filterMonth = '';
+  filterCategory = '';
+
   constructor() {
+    this.yearOptions = [{value: '', label: ''}];
+    this.monthOptions = [{value: '', label: ''}];
+    for (let i = 1; i <= 12; i++) {
+      const month = i < 10 ? '0' + i : '' + i;
+      this.monthOptions.push({value: '-' + month + '-', label: month});
+      const currentYear = new Date().getFullYear();
+      const year = '' + (currentYear - 6 + i);
+      this.yearOptions.push({value: year, label: year})
+    }
+    this.categoryOptions = [
+      {value: '', label: ''},
+      {value: 'breakfast', label: 'breakfast'},
+      {value: 'lunch', label: 'lunch'},
+      {value: 'dinner', label: 'dinner'}
+    ];
+  }
+
+  private category(time: string): string {
+    if (!time) {
+      return 'unknown';
+    }
+    if (time < '12:00:00') {
+      return 'breakfast';
+    }
+
+    if (time > '15:00:00') {
+      return 'dinner';
+    }
+
+    return 'lunch';
   }
 
   private updateGroupMeta() {
@@ -54,6 +95,7 @@ export class MealListComponent {
     for (let i = 0; i < this.meals.length; i++) {
       const date = this.groupKey(this.meals[i].date);
       const calories = this.meals[i].calories || 0;
+      this.meals[i]['_$category'] = this.category(this.meals[i].time);
       if (i == 0) {
         this.groupMeta.set(date, new GroupMeta(0, 1, calories));
       } else {
@@ -74,6 +116,18 @@ export class MealListComponent {
 
   group(date: string): GroupMeta {
     return this.groupMeta.get(this.groupKey(date));
+  }
+
+  filtered(): boolean {
+    return !!this.filterYear || !!this.filterMonth || !!this.filterCategory;
+  }
+
+  filterDate() {
+    this.table.filter(this.filterYear + this.filterMonth, 'date', 'contains');
+  }
+
+  filterTime() {
+    this.table.filter(this.filterCategory, '_$category', 'equals');
   }
 
 }
