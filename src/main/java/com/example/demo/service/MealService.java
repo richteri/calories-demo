@@ -3,6 +3,7 @@ package com.example.demo.service;
 import com.example.demo.domain.Meal;
 import com.example.demo.domain.MealCriteria;
 import com.example.demo.domain.User;
+import com.example.demo.exception.ResourceNotFoundException;
 
 import java.util.List;
 
@@ -23,8 +24,9 @@ public interface MealService {
    *
    * @param id meal identifier
    * @return meal
+   * @throws ResourceNotFoundException if the ID was not found
    */
-  Meal findOne(Long id);
+  Meal findOne(Long id) throws ResourceNotFoundException;
 
   /**
    * Create or save a meal entry

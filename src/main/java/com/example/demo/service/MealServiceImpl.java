@@ -3,6 +3,7 @@ package com.example.demo.service;
 import com.example.demo.domain.Meal;
 import com.example.demo.domain.MealCriteria;
 import com.example.demo.domain.User;
+import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.MealRepository;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
@@ -25,8 +26,12 @@ public class MealServiceImpl implements MealService {
   }
 
   @Override
-  public Meal findOne(Long id) {
-    return mealRepository.findOne(id);
+  public Meal findOne(Long id) throws ResourceNotFoundException {
+    Meal meal = mealRepository.findOne(id);
+    if (meal == null) {
+      throw new ResourceNotFoundException("Meal was not found");
+    }
+    return meal;
   }
 
   @Override

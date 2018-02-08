@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.domain.User;
+import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -27,8 +28,12 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public User findOne(Long id) {
-    return userRepository.findOne(id);
+  public User findOne(Long id) throws ResourceNotFoundException {
+    User user = userRepository.findOne(id);
+    if (user == null) {
+      throw new ResourceNotFoundException("User was not found");
+    }
+    return user;
   }
 
   @Override

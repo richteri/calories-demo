@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.domain.User;
+import com.example.demo.exception.ResourceNotFoundException;
 
 import java.util.List;
 
@@ -17,8 +18,9 @@ public interface UserService {
    *
    * @param id the identifier
    * @return the user
+   * @throws ResourceNotFoundException if the ID was not found
    */
-  User findOne(Long id);
+  User findOne(Long id) throws ResourceNotFoundException;
 
   /**
    * Create or update a user entry

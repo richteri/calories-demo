@@ -297,4 +297,18 @@ public class UserControllerIT extends BaseControllerIT {
         .when().delete("/users/4/meals/{mealId}", sId)
         .then().statusCode(HttpStatus.FORBIDDEN.value());
   }
+
+  @Test
+  public void findOne_userNotFound() {
+    given().auth().basic("admin", "admin")
+        .when().get("/users/0")
+        .then().statusCode(HttpStatus.NOT_FOUND.value());
+  }
+
+  @Test
+  public void delete_noContent() {
+    given().auth().basic("user01", "test")
+        .when().delete("/users/3/meals/1")
+        .then().statusCode(HttpStatus.NO_CONTENT.value());
+  }
 }
