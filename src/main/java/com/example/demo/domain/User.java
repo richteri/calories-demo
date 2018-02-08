@@ -12,6 +12,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
@@ -41,10 +42,16 @@ public class User {
   private String username;
 
   /**
-   * Password cannot be updated after creation.
-   * Hash won't be sent to client.
+   * Persist but don't serialize
    */
-  @Column(length = 60, nullable = false, updatable = false)
+  @JsonIgnore
+  @Column(length = 60, nullable = false)
+  private String passwordHash;
+
+  /**
+   * Serialize but don't persist
+   */
+  @Transient
   private String password;
 
   @Min(0)
@@ -80,6 +87,14 @@ public class User {
 
   public void setUsername(String username) {
     this.username = username;
+  }
+
+  public String getPasswordHash() {
+    return passwordHash;
+  }
+
+  public void setPasswordHash(String passwordHash) {
+    this.passwordHash = passwordHash;
   }
 
   public String getPassword() {
@@ -133,7 +148,7 @@ public class User {
         "id=" + id +
         ", name='" + name + '\'' +
         ", username='" + username + '\'' +
-        ", password='" + password + '\'' +
+        ", passwordHash='" + passwordHash + '\'' +
         ", calories=" + calories +
         ", role=" + role +
         '}';
