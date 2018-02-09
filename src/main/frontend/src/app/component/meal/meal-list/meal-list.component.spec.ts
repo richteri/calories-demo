@@ -22,11 +22,6 @@ describe('MealListComponent', () => {
     expect(component.meals.map(meal => meal.id)).toEqual([6, 4, 5, 3, 1, 2]);
   });
 
-  beforeEach((done: any) => {
-    component = new MealListComponent();
-    done();
-  });
-
   it('should return correct group indices', () => {
     component.meals = meals;
     expect(component.group(null).index).toBe(0);
