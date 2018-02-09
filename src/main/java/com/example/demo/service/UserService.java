@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.domain.User;
+import com.example.demo.exception.ResourceConflictException;
 import com.example.demo.exception.ResourceNotFoundException;
 
 import java.util.List;
@@ -27,8 +28,9 @@ public interface UserService {
    *
    * @param user the entry
    * @return the updated entry
+   * @throws ResourceNotFoundException if the unique username constraint is violated
    */
-  User save(User user);
+  User save(User user) throws ResourceConflictException;
 
   /**
    * Delete a single user entry

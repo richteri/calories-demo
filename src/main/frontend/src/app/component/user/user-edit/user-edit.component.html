@@ -27,7 +27,7 @@
   <div class="ui-g ui-fluid" *ngIf="auth.manager() || auth.principal().id === user?.id">
     <div class="ui-g-2"><label for="user-password">Update Password</label></div>
     <div class="ui-g-4"><input id="user-password" name="password" [(ngModel)]="user.password"
-                               [required]="true" pInputText></div>
+                               [required]="!user?.id" pInputText></div>
   </div>
   <div class="ui-g ui-fluid" *ngIf="auth.manager()">
     <div class="ui-g-2"><label for="user-role">Role</label></div>

@@ -93,7 +93,7 @@ export class HomeComponent implements OnInit {
         this.selectedUser = retrieved;
         this.editedUser = null;
       }, (response: HttpErrorResponse) => {
-          if (response.error.exception.indexOf('DataIntegrityViolationException')) {
+          if (response.status === 409) {
             this.messageService.add({severity:'error', summary:'Update Failed', detail: 'Username already in use'});
           } else {
             this.messageService.add({severity:'error', summary:'Update Failed', detail: response.message});

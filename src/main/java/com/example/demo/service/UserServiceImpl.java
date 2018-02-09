@@ -1,9 +1,11 @@
 package com.example.demo.service;
 
 import com.example.demo.domain.User;
+import com.example.demo.exception.ResourceConflictException;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -37,11 +39,18 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public User save(User user) {
+  public User save(User user) throws ResourceConflictException {
     if (StringUtils.hasText(user.getPassword())) {
       user.setPasswordHash(passwordEncoder.encode(user.getPassword()));
+    } else {
+      User persisted = findOne(user.getId());
+      user.setPasswordHash(persisted.getPasswordHash());
     }
-    return userRepository.save(user);
+    try {
+      return userRepository.save(user);
+    } catch (DataIntegrityViolationException e) {
+      throw new ResourceConflictException("Username is already in use");
+    }
   }
 
   @Override
