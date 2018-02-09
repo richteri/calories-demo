@@ -29,6 +29,7 @@ public class User {
 
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
+  @Column(updatable = false, nullable = false)
   private Long id;
 
   @Size(max = 100)

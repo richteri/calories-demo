@@ -19,7 +19,7 @@ import java.net.URI;
 import java.util.List;
 
 /**
- * Meal API Endpoint for admins only
+ * Meal API Endpoints for admins only
  */
 @RestController
 @RequestMapping("/api/meals")

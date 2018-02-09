@@ -5,6 +5,8 @@ import com.example.demo.domain.MealCriteria;
 import com.example.demo.domain.User;
 import com.example.demo.service.MealService;
 import com.example.demo.service.UserService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -26,8 +28,9 @@ import java.util.List;
 import static com.example.demo.config.SecurityConfig.currentUser;
 
 /**
- * User API Endpoint
+ * User API Endpoints
  */
+@Api(value = "demo", description = "User management endpoints")
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
@@ -39,42 +42,90 @@ public class UserController {
     this.mealService = mealService;
   }
 
+  /**
+   * View a list of available users
+   * Only for ADMINs and MANAGERs
+   *
+   * @return the user list with HTTP 200
+   */
+  @ApiOperation(value = "View a list of available users", response = List.class)
   @PreAuthorize("hasRole('MANAGER')")
-  @GetMapping
+  @GetMapping(produces = "application/json")
   public ResponseEntity<List<User>> findAll() {
     return ResponseEntity.ok(userService.findAll());
   }
 
+  /**
+   * Find the authenticated user for the current session
+   * or send HTTP 401 if the user is not authenticated
+   *
+   * @return the current user and HTTP 200
+   */
+  @ApiOperation(value = "Find the authenticated user for the current session", response = User.class)
   @PreAuthorize("isAuthenticated()")
-  @GetMapping("/current-user")
+  @GetMapping(value = "/current-user", produces = "application/json")
   public ResponseEntity<User> findCurrentUser() {
     return ResponseEntity.ok(currentUser());
   }
 
+  /**
+   * Find a single user by its ID.
+   * Only for ADMINs, MANAGERs and the authenticated user can access their own records
+   *
+   * @param id the ID to look for
+   * @return the user and HTTP 200 or HTTP 404 if not found
+   */
+  @ApiOperation(value = "Find a single user by its ID", response = User.class)
   @PreAuthorize("principal.id == #id or hasRole('MANAGER')")
-  @GetMapping("/{id}")
+  @GetMapping(value = "/{id}", produces = "application/json")
   public ResponseEntity<User> findOne(@PathVariable("id") Long id) {
     User user = userService.findOne(id);
     return ResponseEntity.ok(user);
   }
 
+  /**
+   * Create a user.
+   * Only for ADMINs and MANAGERs.
+   *
+   * @param user the user to be created
+   * @return the created user and its ID in the Location header with HTTP 201
+   */
+  @ApiOperation(value = "Create a user", response = User.class)
   @PreAuthorize("hasRole('MANAGER')")
-  @PostMapping
+  @PostMapping(produces = "application/json")
   public ResponseEntity<User> create(@Valid @RequestBody User user) {
     User saved = userService.save(user);
     return ResponseEntity.created(URI.create(saved.getId().toString())).body(saved);
   }
 
+  /**
+   * Update a user.
+   * Only for ADMNs, MANAGERs and the authenticated user can access their own records
+   *
+   * @param id the ID of the user to be updated
+   * @param user the updated values
+   * @return the updated user with HTTP 200
+   */
+  @ApiOperation(value = "Update a user", response = User.class)
   @PreAuthorize("principal.id == #id or hasRole('MANAGER')")
-  @PutMapping("/{id}")
+  @PutMapping(value = "/{id}", produces = "application/json")
   public ResponseEntity<User> update(@PathVariable("id") Long id, @Valid @RequestBody User user) {
+    // make sure the payload has the right ID to avoid updating someone else's record
     user.setId(id);
     User saved = userService.save(user);
     return ResponseEntity.ok(saved);
   }
 
+  /**
+   * Delete a user by its ID.
+   * Only for ADMINs, MANAGERs and the authenticated user can access their own records
+   *
+   * @param id the user ID to look for
+   * @return HTTP 203 if the delete was successful, HTTP 404 if the user was not found
+   */
+  @ApiOperation(value = "Delete a user")
   @PreAuthorize("principal.id == #id or hasRole('MANAGER')")
-  @DeleteMapping("/{id}")
+  @DeleteMapping(value = "/{id}", produces = "application/json")
   @Transactional
   public ResponseEntity<Void> delete(@PathVariable("id") Long id) {
     User user = userService.findOne(id);
@@ -83,15 +134,17 @@ public class UserController {
     return ResponseEntity.noContent().build();
   }
 
+  @ApiOperation(value = "View all meals associated with a user", response = List.class)
   @PreAuthorize("principal.id == #id or hasRole('ADMIN')")
-  @GetMapping("/{id}/meals")
+  @GetMapping(value = "/{id}/meals", produces = "application/json")
   public ResponseEntity<List<Meal>> findAllMeals(@PathVariable("id") Long id) {
     User user = userService.findOne(id);
     return ResponseEntity.ok(mealService.findByUser(user));
   }
 
+  @ApiOperation(value = "Create a new meal", response = Meal.class)
   @PreAuthorize("principal.id == #id or hasRole('ADMIN')")
-  @PostMapping("/{id}/meals")
+  @PostMapping(value = "/{id}/meals", produces = "application/json")
   public ResponseEntity<Meal> createMeal(@PathVariable("id") Long id, @Valid @RequestBody Meal meal) {
     User user = userService.findOne(id);
     meal.setUser(user);

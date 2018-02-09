@@ -9,7 +9,6 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.Authentication;
@@ -26,6 +25,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
+  /**
+   * Custom user details service
+   */
   private final UserDetailsService userDetailsService;
 
   @Autowired
@@ -33,27 +35,43 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     this.userDetailsService = userDetailsService;
   }
 
+  /**
+   * Wire in our custom auth provider
+   *
+   * @param auth the authentication manager builder
+   */
   @Override
   protected void configure(final AuthenticationManagerBuilder auth) {
     auth.authenticationProvider(authenticationProvider());
   }
 
-  @Override
-  public void configure(WebSecurity web) {
-    web.ignoring().antMatchers("/resources/**");
-  }
-
+  /**
+   * Protect the /api only everything else is static content
+   *
+   * @param http the HTTP security
+   * @throws Exception if an error occurs
+   */
   @Override
   protected void configure(final HttpSecurity http) throws Exception {
     http
         .authorizeRequests()
-        .antMatchers("/").permitAll()
+        // protect the API
         .antMatchers("/api/**").fullyAuthenticated()
+        // allow anonymous access to everything else
+        .antMatchers("/").permitAll()
+        // use HTTP Basic authentication
         .and().httpBasic()
+        // disable Cross Site Request Forgery for simplicity
         .and().csrf().disable()
+          // enable H2 /console
           .headers().frameOptions().disable();
   }
 
+  /**
+   * Use DB-based auth
+   *
+   * @return the authentication provider
+   */
   @Bean
   public DaoAuthenticationProvider authenticationProvider() {
     final DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
@@ -62,6 +80,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     return authProvider;
   }
 
+  /**
+   * Use BCrypt for password hashing
+   *
+   * @return the password encoder
+   */
   @Bean
   public PasswordEncoder encoder() {
     return new BCryptPasswordEncoder(11);
