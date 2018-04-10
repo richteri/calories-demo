@@ -9,6 +9,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class MealServiceImpl implements MealService {
@@ -26,12 +27,12 @@ public class MealServiceImpl implements MealService {
   }
 
   @Override
-  public Meal findOne(Long id) throws ResourceNotFoundException {
-    Meal meal = mealRepository.findOne(id);
-    if (meal == null) {
+  public Meal findById(Long id) throws ResourceNotFoundException {
+    Optional<Meal> meal = mealRepository.findById(id);
+    if (!meal.isPresent()) {
       throw new ResourceNotFoundException("Meal was not found");
     }
-    return meal;
+    return meal.get();
   }
 
   @Override

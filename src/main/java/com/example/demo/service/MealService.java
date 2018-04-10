@@ -26,7 +26,7 @@ public interface MealService {
    * @return meal
    * @throws ResourceNotFoundException if the ID was not found
    */
-  Meal findOne(Long id) throws ResourceNotFoundException;
+  Meal findById(Long id) throws ResourceNotFoundException;
 
   /**
    * Create or save a meal entry

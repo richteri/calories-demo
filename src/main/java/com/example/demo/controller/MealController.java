@@ -56,7 +56,7 @@ public class MealController {
   @PreAuthorize("hasRole('ADMIN')")
   @DeleteMapping("/{id}")
   public ResponseEntity<Void> delete(@PathVariable("id") Long id) {
-    Meal meal = mealService.findOne(id);
+    Meal meal = mealService.findById(id);
     mealService.delete(meal);
     return ResponseEntity.noContent().build();
   }

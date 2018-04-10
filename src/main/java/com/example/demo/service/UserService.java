@@ -21,7 +21,7 @@ public interface UserService {
    * @return the user
    * @throws ResourceNotFoundException if the ID was not found
    */
-  User findOne(Long id) throws ResourceNotFoundException;
+  User findById(Long id) throws ResourceNotFoundException;
 
   /**
    * Create or update a user entry

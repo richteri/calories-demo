@@ -79,7 +79,7 @@ public class UserController {
   @PreAuthorize("principal.id == #id or hasRole('MANAGER')")
   @GetMapping(value = "/{id}", produces = "application/json")
   public ResponseEntity<User> findOne(@PathVariable("id") Long id) {
-    User user = userService.findOne(id);
+    User user = userService.findById(id);
     return ResponseEntity.ok(user);
   }
 
@@ -128,7 +128,7 @@ public class UserController {
   @DeleteMapping(value = "/{id}", produces = "application/json")
   @Transactional
   public ResponseEntity<Void> delete(@PathVariable("id") Long id) {
-    User user = userService.findOne(id);
+    User user = userService.findById(id);
     mealService.deleteAllByUser(user);
     userService.delete(user);
     return ResponseEntity.noContent().build();
@@ -138,7 +138,7 @@ public class UserController {
   @PreAuthorize("principal.id == #id or hasRole('ADMIN')")
   @GetMapping(value = "/{id}/meals", produces = "application/json")
   public ResponseEntity<List<Meal>> findAllMeals(@PathVariable("id") Long id) {
-    User user = userService.findOne(id);
+    User user = userService.findById(id);
     return ResponseEntity.ok(mealService.findByUser(user));
   }
 
@@ -146,7 +146,7 @@ public class UserController {
   @PreAuthorize("principal.id == #id or hasRole('ADMIN')")
   @PostMapping(value = "/{id}/meals", produces = "application/json")
   public ResponseEntity<Meal> createMeal(@PathVariable("id") Long id, @Valid @RequestBody Meal meal) {
-    User user = userService.findOne(id);
+    User user = userService.findById(id);
     meal.setUser(user);
     Meal saved = mealService.save(meal);
     return ResponseEntity.created(URI.create(saved.getId().toString())).body(saved);
@@ -157,9 +157,9 @@ public class UserController {
   public ResponseEntity<Meal> updateMeal(@PathVariable("id") Long id, @PathVariable("mealId") Long mealId,
                                          HttpServletRequest request,
                                          @Valid @RequestBody Meal meal) {
-    Meal persisted = mealService.findOne(mealId);
+    Meal persisted = mealService.findById(mealId);
     if (persisted.getUser().equals(currentUser()) || request.isUserInRole("ADMIN")) {
-      User user = userService.findOne(id);
+      User user = userService.findById(id);
       meal.setUser(user);
       Meal updated = mealService.save(meal);
       return ResponseEntity.ok(updated);
@@ -173,7 +173,7 @@ public class UserController {
   @PostMapping("/{id}/meals/search")
   public ResponseEntity<List<Meal>> findMealsByDateAndTime(@PathVariable("id") Long id,
                                                            @Valid @RequestBody MealCriteria mealCriteria) {
-    User user = userService.findOne(id);
+    User user = userService.findById(id);
     mealCriteria.setUser(user);
     return ResponseEntity.ok(mealService.findByCriteria(mealCriteria));
   }
@@ -182,7 +182,7 @@ public class UserController {
   @DeleteMapping("/{id}/meals/{mealId}")
   public ResponseEntity<Void> delete(@PathVariable("id") Long id, @PathVariable("mealId") Long mealId,
                                      HttpServletRequest request) {
-    Meal meal = mealService.findOne(mealId);
+    Meal meal = mealService.findById(mealId);
     if (meal.getUser().equals(currentUser()) || request.isUserInRole("ADMIN")) {
       mealService.delete(meal);
     } else {

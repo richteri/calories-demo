@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -30,12 +31,12 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public User findOne(Long id) throws ResourceNotFoundException {
-    User user = userRepository.findOne(id);
-    if (user == null) {
+  public User findById(Long id) throws ResourceNotFoundException {
+    Optional<User> user = userRepository.findById(id);
+    if (!user.isPresent()) {
       throw new ResourceNotFoundException("User was not found");
     }
-    return user;
+    return user.get();
   }
 
   @Override
@@ -43,7 +44,7 @@ public class UserServiceImpl implements UserService {
     if (StringUtils.hasText(user.getPassword())) {
       user.setPasswordHash(passwordEncoder.encode(user.getPassword()));
     } else {
-      User persisted = findOne(user.getId());
+      User persisted = findById(user.getId());
       user.setPasswordHash(persisted.getPasswordHash());
     }
     try {
