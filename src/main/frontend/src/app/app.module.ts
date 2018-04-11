@@ -12,7 +12,11 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { GrowlModule } from 'primeng/growl';
 import { MessageService } from 'primeng/components/common/messageservice';
 import { CustomHttpInterceptor } from './service/custom-http-interceptor';
+import { JwtModule } from '@auth0/angular-jwt';
 
+export function tokenGetter() {
+  return localStorage.getItem('access_token');
+}
 
 @NgModule({
   declarations: [
@@ -26,7 +30,17 @@ import { CustomHttpInterceptor } from './service/custom-http-interceptor';
     ServiceModule,
     HomeModule,
     LoginModule,
-    GrowlModule
+    GrowlModule,
+    JwtModule.forRoot({
+      config: {
+        tokenGetter: tokenGetter,
+        // only the /api needs these tokens
+        whitelistedDomains: ['localhost:8080/api/', 'localhost:4200/api/', 'localhost/api/'],
+        blacklistedRoutes: ['localhost:8080/oauth/', 'localhost:4200/oauth/'],
+        throwNoTokenError: true,
+        skipWhenExpired: true
+      }
+    })
   ],
   providers: [
     MessageService,

@@ -3,19 +3,28 @@ package com.example.demo.config;
 import com.example.demo.domain.User;
 import com.example.demo.security.Principal;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
+import org.springframework.security.oauth2.provider.token.TokenStore;
+import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
+import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 
 /**
  * Spring Security Related Configuration
@@ -25,13 +34,46 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
+  @Value("${security.signing-key}")
+  private String signingKey;
+
+  @Value("${security.security-realm}")
+  private String securityRealm;
+
+  @Bean
+  @Override
+  protected AuthenticationManager authenticationManager() throws Exception {
+    return super.authenticationManager();
+  }
+
+  @Bean
+  public JwtAccessTokenConverter accessTokenConverter() {
+    JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
+    converter.setSigningKey(signingKey);
+    return converter;
+  }
+
+  @Bean
+  public TokenStore tokenStore() {
+    return new JwtTokenStore(accessTokenConverter());
+  }
+
+  @Bean
+  @Primary
+  //Making this primary to avoid any accidental duplication with another token service instance of the same name
+  public DefaultTokenServices tokenServices() {
+    DefaultTokenServices defaultTokenServices = new DefaultTokenServices();
+    defaultTokenServices.setTokenStore(tokenStore());
+    defaultTokenServices.setSupportRefreshToken(true);
+    return defaultTokenServices;
+  }
   /**
    * Custom user details service
    */
   private final UserDetailsService userDetailsService;
 
   @Autowired
-  public SecurityConfig(UserDetailsService userDetailsService) {
+  public SecurityConfig(@Qualifier("userDetailsService") UserDetailsService userDetailsService) {
     this.userDetailsService = userDetailsService;
   }
 
@@ -54,17 +96,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   @Override
   protected void configure(final HttpSecurity http) throws Exception {
     http
-        .authorizeRequests()
-        // protect the API
-        .antMatchers("/api/**").fullyAuthenticated()
-        // allow anonymous access to everything else
-        .antMatchers("/").permitAll()
+        .sessionManagement()
+        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         // use HTTP Basic authentication
         .and().httpBasic()
-        // disable Cross Site Request Forgery for simplicity
-        .and().csrf().disable()
-          // enable H2 /console
-          .headers().frameOptions().disable();
+        .realmName(securityRealm)
+        // disable Cross Site Request Forgery for JWT
+        .and().csrf().disable();
   }
 
   /**

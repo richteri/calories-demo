@@ -32,20 +32,4 @@ public class DatasourceConfig {
         .build();
   }
 
-  @Bean
-  public LocalContainerEntityManagerFactoryBean entityManagerFactory(@Qualifier("datasource") DataSource ds) {
-    LocalContainerEntityManagerFactoryBean entityManagerFactory = new LocalContainerEntityManagerFactoryBean();
-    entityManagerFactory.setDataSource(ds);
-    entityManagerFactory.setPackagesToScan("com.example.demo.domain");
-    JpaVendorAdapter jpaVendorAdapter = new HibernateJpaVendorAdapter();
-    entityManagerFactory.setJpaVendorAdapter(jpaVendorAdapter);
-    return entityManagerFactory;
-  }
-
-  @Bean
-  public PlatformTransactionManager transactionManager(EntityManagerFactory entityManagerFactory) {
-    JpaTransactionManager transactionManager = new JpaTransactionManager();
-    transactionManager.setEntityManagerFactory(entityManagerFactory);
-    return transactionManager;
-  }
 }
